@@ -1,0 +1,115 @@
+---
+title: "Exercise 1"
+author: "Ashish Das"
+date: "04/08/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Name = Ashish Das
+## RegNo = 19BCE1160
+
+## 1. Convert TRUE to an integer
+```{r}
+as.integer(TRUE)
+```
+
+## 2. Make this quote into an R string– “Do you think this is a game?”, he said. “No, I think Jenga’s a game”, Archer responded.
+```{r}
+str1 <- "Do you think this is a game?"
+str2 <- ", he said."
+str3 <- "No, I think Jenga's a game, Archer responded"
+str1
+str2
+str3
+```
+## 3. Assign an integer value to two variables p & q.
+```{r}
+p<-8L
+q<-2L
+p
+q
+```
+
+## 4. Use R as a calculator to do basic arithmetic operations on p &q and store each result in different variables.
+```{r}
+a<-p+q
+a
+b<-p-q
+b
+c<-p*q
+c
+d<-p/q
+d
+```
+
+## 5. Calculate sqrt(p) and perform log2 transformation on the result.
+```{r}
+r<-sqrt(p)
+r
+log2(r)
+```
+
+## 6. Calculate the 10-based logarithm of 100 and multiply the result with cosine of π.
+```{r}
+s<-log10(100)
+s
+s*cos(pi)
+```
+
+## 7. Create a vector ‘x’ using : operator from -2 to 2.
+```{r}
+x<--2:2
+x
+```
+
+## 8. Create a vector ‘y’ using c() with values 1 to 10. What is the dimension of y and length of y.
+```{r}
+y<-c(1,2,3,4,5,6,7,8,9,10)
+y
+length(y)
+dim(y)
+```
+
+## 9. Create two vectors small and caps with first 5 alphabets in lower case and last 5 alphabets in upper case respectively. Bind it row and columnwise.
+```{r}
+small<-c("a","b","c","d","e")
+small
+caps<-c("V","W","X","Y","Z")
+caps
+
+rbind(small,caps)
+cbind(small,caps)
+```
+
+## 10. Create a matrix M=[1,4,3;−2,8,6;5,−1,7] and find MxMxM.
+```{r}
+M<-matrix(c(1,4,3,−2,8,6,5,−1,7),nrow = 3,ncol = 3,byrow = TRUE)
+M
+M*M*M
+```
+
+## 11. Find the result of elementwise multiplication of M by M.
+```{r}
+M*M
+```
+
+## 12. Find the transpose, inverse and determinant of M.
+## a) Transpose:
+```{r}
+t(M)
+```
+## b) Inverse:
+```{r}
+solve(M)
+```
+## c) Determinant:
+```{r}
+det(M)
+```
+
+
+
