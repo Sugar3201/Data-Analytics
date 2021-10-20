@@ -1,0 +1,90 @@
+title: "Exercise3"
+author: "Ashish Das"
+date: "8/17/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+# Ashish Das
+# 19BCE1160
+
+## Ex-3 Data Manipulation using dplyr package
+
+## Display the structure of the data survey.
+```{r}
+library(MASS)
+data("survey")
+str(survey)
+```
+## Obtain a data frame called “newsurvey” by removing all ‘na’ values in “survey” data of MASS package 
+```{r}
+newsurvey <- na.omit(survey)
+newsurvey
+```
+
+## 1.	Install the dplyr package and import it.
+```{r}
+library(dplyr)
+cat("Installed and Imported dplyr package")
+```
+
+## 2.	Filter the top 5 male left handers.
+```{r}
+newsurvey %>%
+  filter(Sex=="Male", W.Hnd=="Left") %>%
+  head(5)
+```
+## 3.	Display all female right handers who keep right on top while clapping.
+```{r}
+newsurvey %>%
+  filter(W.Hnd=='Right'& Sex=='Female'& Clap=='Right')
+```
+## 4.	Display all students who never exercise.
+```{r}
+newsurvey %>%
+  filter(Exer=='None')
+```
+## 5.	Display random 5 rows of gender, age and writing hand columns of the students.
+```{r}
+newsurvey %>%
+  dplyr::select(Sex, Age, W.Hnd)%>%
+  sample_n(5)
+```
+## 6.	Display random 5% of the rows of age, pulse rate and writing hand span of female left handers.
+```{r}
+newsurvey %>%
+  filter(Sex == 'Female'& W.Hnd =='Left')%>%
+  dplyr::select(Sex,Age, Pulse, Wr.Hnd)%>%
+  sample_frac(.5)
+```
+
+## 7.	Arrange all male left handers according to descending order of their heights.
+```{r}
+newsurvey %>%
+  filter(W.Hnd=='Left'& Sex=='Male')%>%
+  arrange(desc(Height))
+```
+
+## 8.	Introduce a new column hand_span which contains the value as difference between the span of writing hand and non-writing hand and display it along with gender, writing hand and non-writing hand span.
+```{r}
+newsurvey %>%
+  mutate(hand_span=Wr.Hnd-NW.Hnd)%>%
+  dplyr::select(Sex, Wr.Hnd, NW.Hnd, hand_span)
+```
+
+## 9.	Display the average writing span of male and female left handers.
+```{r}
+newsurvey %>%
+  filter(W.Hnd == 'Left') %>%
+  group_by(Sex) %>%
+  summarise(average=mean(Wr.Hnd))
+```
+## 10.	Find the maximum pulse rate of male left and right handers.
+```{r}
+newsurvey %>%
+  filter(Sex == 'Male') %>%
+  group_by(W.Hnd) %>%
+  summarise(average=max(Pulse))
+```
