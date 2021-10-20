@@ -1,0 +1,71 @@
+---
+title: "ex-4 = Data Cleaning"
+author: "Ashish Das"
+date: "24/08/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# NAME - ASHISH DAS
+# REG NO - 19BCE1160
+
+
+```{r}
+nyc <- read.csv("nyc.csv")
+dim(nyc)
+str(nyc)
+View(nyc)
+
+
+nyc_clean <- na.omit(nyc)
+sum(is.na(nyc_clean))
+
+sum(is.na(nyc$id))
+sum(is.na(nyc$name))
+sum(is.na(nyc$host_id))
+sum(is.na(nyc$host_name))
+sum(is.na(nyc$neighbourhood_group))
+sum(is.na(nyc$neighbourhood))
+sum(is.na(nyc$latitude))
+sum(is.na(nyc$longitude))
+sum(is.na(nyc$room_type))
+sum(is.na(nyc$price))
+sum(is.na(nyc$minimum_nights))
+sum(is.na(nyc$number_of_reviews))
+sum(is.na(nyc$last_review))
+sum(is.na(nyc$reviews_per_month))
+sum(is.na(nyc$calculated_host_listings_count))
+sum(is.na(nyc$availability_365))
+
+
+unique(nyc$reviews_per_month)
+
+mean(nyc$reviews_per_month,na.rm = TRUE)
+
+library(dplyr)
+library(tidyverse)
+
+nyc %>%
+  summarize(avg=mean(reviews_per_month,na.rm=TRUE),med=median(reviews_per_month,na.rm=TRUE))
+
+nyc <- nyc %>%
+  mutate(reviews_per_month=replace(reviews_per_month,is.na(reviews_per_month),median(reviews_per_month,na.rm=TRUE)))
+
+sum(is.na(nyc$reviews_per_month))
+names(nyc)
+view(nyc)
+
+str(nyc)
+```
+# Summary
+## checked for total na values in original dataset "nyc.csv"
+## checked all the columns indivisually for na Values.
+## checked if the data type was appropriate for the particular column or not
+## found na values in reviews_per_months 
+###  - cleaned the data for na values
+###  - found mean and median for the data
+###  -replaced na values with median because in a large dataset there is a huge difference between higest and lowest values so median would be more  appropriate option.
+## displayed the final table
