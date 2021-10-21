@@ -1,0 +1,106 @@
+title: "Exercise5"
+author: "Ashish Das"
+date: "9/7/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+# Ashish Das
+# 19BCE1160
+
+```{r}
+library(dplyr)
+library(help="graphics")
+library(lattice)
+```
+
+### Use the newsurvey data obtained by cleaning ‘na’ values in survey data of MASS package to do the following:
+```{r}
+library(MASS)
+data("survey")
+str(survey)
+```
+
+```{r}
+library(dplyr)
+```
+
+### Cleaning up the dataset
+```{r}
+newsurvey <- na.omit(survey)
+```
+
+
+### Checking if the `newsurvey` has any NA values left
+```{r}
+sum(is.na(newsurvey))
+```
+
+
+### 1.	Plot a bar graph for the number of male and female participants in the survey. Provide the title as “Male and Female participants”, y-axis label as “frequency” and specify the colours for the bars.
+```{r}
+barplot(table(newsurvey$Sex),col=c("red","green"), main = "Male and Female participants", ylab = "Frequency")
+```
+
+
+### 2. Plot a bar graph for the number of left handers and right handers in the survey. Provide the title as “Left Handers and Right Handers”, y-axis label as “count” and specify the colours for the bars.
+```{r}
+barplot(table(newsurvey$W.Hnd),col=c("red","green"), main = "Left Handers and Right Handers", ylab = "Count")
+```
+
+
+### 3. Plot the distribution between male left handers and female left handers using bar chart. Provide the title as “Female Left Handers and Male Left Handers" , y-axis label as “count” and specify the colours for the bars.
+```{r}
+left_hnd <- newsurvey %>%
+    filter(W.Hnd=="Left")
+barplot(table(left_hnd$Sex),col=c("red","green"), main = "Female Left Handers and Male Left Handers", ylab = "Frequency")
+```
+
+
+### 4.	Draw the distribution of smoking habits of male left handers using pie chart.
+```{r}
+male_lefty <- newsurvey%>%
+  filter(Sex=="Male", W.Hnd=="Left")
+unique(male_lefty$Smoke)
+table(male_lefty$Smoke)
+
+pie(table(male_lefty$Smoke),radius=1)
+```
+
+### 5.	Draw the histogram of age distribution with the title as ‘Age distribution’ and xlabel as ‘Age range’ and ylabel as ‘frequency’.
+```{r}
+hist(newsurvey$Age, main="Age distribution", ylab = "Frequency", xlab = "Age range")
+```
+
+### 6.	Reveal the relationship between the age and writing hand span using scatter plot.
+```{r}
+plot(newsurvey$Age, newsurvey$Wr.Hnd)
+```
+
+### 7.	Draw the boxplot for pulse rate to analyse the five summary statistics. Provide appropriate title and label.
+```{r}
+summary(newsurvey$Pulse)
+boxplot(newsurvey$Pulse, main="Boxplot for the Pulse rate", ylab="Count", xlab="Pulse Rate")
+```
+
+### 8.Frame any 3 questions on data visualization to graphically depict the data that you have chosen for cleaning.
+```{r}
+nyc <- read.csv("nyc.csv")
+str(nyc)
+nyc_clean <- na.omit(nyc)
+```
+### 8.a. Draw a density plot for latitute for the data set
+```{r}
+densityplot(nyc_clean$latitude)
+```
+
+### 8.b. Draw a splom for the data set.
+```{r}
+splom(nyc_clean[c(1,3,4)])
+```
+### 8.c. Plot a bar graph for the price in the survey. Provide the title as “Price over the years”, y-axis label as “Amount in rupees”.
+```{r}
+barplot((nyc_clean$price),col=c("green"), main = "Price over the years", ylab = "Amount in rupees")
+```
