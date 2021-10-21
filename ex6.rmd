@@ -1,0 +1,102 @@
+---
+title: "Ex-6 Visualization Using Grammar of Graphics"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Name: Ashish Das
+## Registration number: 19BCE1160
+
+## Display the structure of the data survey.
+```{r}
+library(MASS)
+library(ggplot2)
+data("survey")
+library(dplyr)
+```
+
+```{r}
+newsurvey <- na.omit(survey)
+head(newsurvey)
+```
+
+## 1. Plot a bar graph for the number of male and female participants in the survey. Provide the title as “Male and Female participants” and specify the colours for the bars.
+```{r}
+ggplot(data=newsurvey,mapping=aes(x=Sex, fill=Sex))+geom_bar() + ggtitle("Male and Female participants")
+```
+
+## 2. Plot a bar graph for the number of left handers and right handers in the survey. Provide the title as “Left Handers and Right Handers” and specify the colours for the bars
+```{r}
+ggplot(data=newsurvey,mapping=aes(x=W.Hnd, fill=W.Hnd))+geom_bar() + ggtitle("Left Handers and Right Handers")
+```
+
+## 3. Plot the distribution between male left handers and female left handers using bar chart. Provide the title as “Female Left Handers and Male Left Handers” and specify the colours for the bars.
+```{r} 
+ggplot(data=filter(newsurvey, W.Hnd=="Left"),mapping=aes(x=Sex, fill=Sex))+geom_bar() + ggtitle("Female Left Handers and Male Left Handers")
+```
+
+## 4. Draw the distribution of smoking habits of male left handers based on age using pie chart.
+```{r}
+ggplot(filter(newsurvey, Sex=="Male", W.Hnd=="Left"), mapping=aes(x="",y=Age,fill=Smoke))+geom_bar(width=1,stat='identity')+coord_polar("y",start = 0)
+```
+
+## 5. Draw the histogram of age distribution with the title as ‘Age distribution’ and xlabel as ‘Age range’ and ylabel as ‘frequency’.
+```{r}
+ggplot(data=newsurvey,mapping=aes(x=Age))+geom_histogram()+labs(title='Age Distribution', x='Age Range', y='Frequency')
+
+```
+
+## 6. Reveal the relationship between the age and writing hand span using scatter plot.
+```{r}
+ggplot(data=newsurvey,mapping=aes(x=Age,y=Wr.Hnd))+geom_point()
+```
+
+## 7. Plot the distribution of writing hand span vs. pulse rate of left handers. Provide colour based on gender and vary the size of the point based on height of the student.
+```{r}
+left <- filter(newsurvey,W.Hnd=="Left")
+ggplot(left, aes(x=Wr.Hnd, y=Pulse)) + geom_point(aes(colour = factor(Sex),size = Height))
+```
+
+## 8. Plot the distribution of height of the students with filled colour based on gender with facet based on left and write handers.
+```{r}
+ggplot(data=newsurvey, mapping=aes(x=Height, fill=Sex)) + geom_histogram(binwidth = 1) + facet_grid(newsurvey$W.Hnd)
+```
+
+## 9. Plot the trend of span of writing hand vs. non-writing hand coloured and grouped based on left and right handers with facet label based on clap.
+```{r}
+ggplot(data=newsurvey,mapping=aes(x=Wr.Hnd,y=NW.Hnd,color=W.Hnd))+geom_point()+facet_wrap(newsurvey$Clap,ncol=1)
+```
+
+## 10. Plot the distribution of age of students based on categories under exercise with facet wrap based on gender.
+```{r}
+ggplot(data=newsurvey,mapping=aes(x=Age, fill=Exer))+geom_histogram(binwidth = 1)+facet_wrap(newsurvey$Sex,ncol=1)
+```
+
+## 11. Plot the box plot of writing hand span with respect to smoking habits of students.
+```{r}
+ggplot(newsurvey, aes(x=Wr.Hnd, group=Smoke)) + geom_boxplot(aes(fill=Smoke))
+```
+
+## 12. Plot a bar graph for the number of Smokers in the survey.
+```{r}
+ggplot(data=newsurvey,mapping=aes(x=Smoke, fill=Smoke))+geom_bar()
+```
+
+## 13. Reveal the relationship between the Pulse and Height using scatter plot.
+```{r}
+ggplot(data=newsurvey,mapping=aes(x=Pulse,y=Height))+geom_point()
+```
+
+## 14. Plot the distribution of Pulse of the students with filled colour based on Exercise frequency with facet based on gender.
+```{r}
+ggplot(data=newsurvey, mapping=aes(x=Pulse, fill=Exer)) + geom_histogram(binwidth = 1) + facet_grid(newsurvey$Sex)
+```
+
+## 15. Plot the distribution of W.Hnd of students based on categories under which hand is on top while clapping with facet wrap based on Exercise frequency
+### The graphs are seperated based on the frequency of exercise done by the students.
+```{r}
+ggplot(data=newsurvey,mapping=aes(x=Age, fill=Clap))+geom_histogram(binwidth = 1)+facet_wrap(newsurvey$Exer,ncol=1)
+```
