@@ -1,0 +1,137 @@
+---
+title: "Ex-7 19BCE1160"
+author: "Ashish Das"
+date: "28/09/2021"
+output: html_document
+---
+
+## ASHISH DAS
+## REGNO - 19BCE1160
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#### Create a data frame ‘newsurvey’ that contains the survey data in MASS package after removing the NA values. Use it for answering following queries:
+```{r}
+library(MASS)
+library(dplyr)
+library(ggplot2)
+data("survey")
+newsurvey <- survey
+nrow(newsurvey)
+newsurvey <- newsurvey[complete.cases(newsurvey),]
+nrow(newsurvey)
+str(newsurvey)
+```
+
+#### 1. How many male and female students participated in the survey?.
+```{r}
+gender_freq=table(newsurvey$Sex)
+gender_freq
+```
+
+#### 2. Find the relative frequency distribution of male and female participants and display them with the precision of two decimal places.
+```{r}
+old=options(digits=2)
+size=nrow(newsurvey)
+gender_relfreq=gender_freq/size
+gender_relfreq
+```
+
+#### 3. Display the male right hander and female right hander in the column format.
+```{r}
+hander_freq=table(newsurvey$W.Hnd)
+cbind(hander_freq)
+```
+
+#### 4. What percentage of male left handers never smokes?
+```{r}
+total = newsurvey %>%
+  filter(Sex=='Male' , W.Hnd=='Left')%>%
+  summarize(cnt = n())
+smokers = newsurvey %>%
+  filter(Sex=='Male', W.Hnd == 'Left', Smoke!='Never') %>%
+  summarise(cnt=n())
+(smokers/total)*100
+```
+
+#### 5. Find the range of students’ age participated in the survey.
+```{r}
+duration=newsurvey$Age
+range(duration)
+```
+
+#### 6. Break the age range into non-overlapping sub-intervals by defining a sequence of equal distance break points of 10 by rounding the range to nearest integer.
+```{r}
+breaks=seq(10,70,by=10)
+breaks
+```
+
+#### 7. Find the distribution of the age range according to the sub-intervals with cut with its right boundary opened. Display it in column form.
+```{r}
+duration_cut=cut(duration,breaks,right=FALSE)
+duration_freq=table(duration_cut)
+cbind(duration_freq)
+```
+
+#### 8. Which age range of students has mostly participated in the survey.
+```{r}
+which.max(duration_freq)
+```
+
+#### 9. Compute the mean, variance and standard deviation of the age of the students participated in the survey.
+```{r}
+cat("Mean: ", mean(newsurvey$Age))
+cat("Variance: ", var(newsurvey$Age))
+cat("Standard Deviation: ", sd(newsurvey$Age))
+```
+
+#### 10.Which category of exercise students has the maximum writing hand span 
+```{r}
+exer_cat = newsurvey%>%
+            arrange(desc(Wr.Hnd))%>%
+              select(Exer)
+head(exer_cat,1)
+```
+
+#### 11. Compute the covariance and correlation between age and writing span
+```{r}
+waiting=newsurvey$Wr.Hnd
+cov(duration,waiting)
+
+cor(duration,waiting)
+```
+
+#### 12. Display the 20%,50% and 70% percentile of the age data.
+```{r}
+percentile_age=quantile(duration, c(.20,.50,.70))
+percentile_age
+```
+
+```{r}
+library(MASS)
+head(painters)
+str(painters)
+```
+#### 13. What percentage of painters use color more than 15 and expression less than 5?
+```{r}
+hsef=painters%>%
+  filter(Colour>=15, Expression<5)
+hsefperc <- nrow(hsef)/nrow(painters)*100  
+hsefperc
+```
+
+#### 14. What percentage of painters use composition = 10 and drawing less than 5?
+```{r}
+hsef=painters%>%
+  filter(Composition==10, Drawing<5)
+hsefperc <- nrow(hsef)/nrow(painters)*100  
+hsefperc
+```
+#### 15. Find range of values in Eruptions
+```{r}
+duration=faithful$eruptions
+range(duration)
+```
+
