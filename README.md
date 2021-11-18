@@ -20,7 +20,7 @@ setwd() # set the current working directory
 
 help(options) #learn about available options
 
-options() #view current option settings
+options() # view current option settings
 
 
 Creating a data frame
