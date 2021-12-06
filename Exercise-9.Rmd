@@ -1,0 +1,190 @@
+---
+title: "Ex-12 Enviromental Analytics"
+date: "09/11/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+## Reg.no: 19BCE1160
+## Name: Ashish Das
+#### Choose any data set related to environment (air, water, rainfall, weather etc.), perform the analysis and provide your analytical report in html format. Mention the link of data set in the report.]
+
+#### Pulling the dataset and the required packages.
+```{r}
+library(datarium)
+library(dplyr)
+library(ggplot2)
+library(caret)
+mydf <- read.csv("number-of-deaths-by-risk-factor.csv", na.strings = c("","?","??","???"))
+mydf <- mydf[complete.cases(mydf),]
+dim(mydf)
+str(mydf)
+```
+## This dataset contains various attributes such as the gender, bmi, no. of childrens, region along with the amount the person is paying as health insurance.
+### Data Cleaning.
+####Checking for na values.
+```{r}
+sum(is.na(mydf))
+```
+
+No na values present in the dataset.
+
+#### Checking whether the columns require furhter cleaning.
+```{r}
+unique(mydf$sex)
+unique(mydf$region)
+unique(mydf$smoker)
+```
+
+We can conclude that the columns sex, smoker and region do not require further cleaning any further cleaning and all the other columns are already in the numerical/ integer format.
+
+### Data Visualization.
+#### Bar Plot b/w number of male and female participants.
+```{r}
+barplot(table(mydf$sex),col=c("pink","blue"), main = "Male and Female who took Health Insurance", ylab = "Frequency")
+```
+
+We can infer that in our dataset the distribution of male and female who took paid the health insurance are of equal number.
+
+#### Building the linear model 
+```{r}
+barplot(table(mydf$smoker),col=c("pink","blue"), main = "Distribution of smokers", ylab = "Frequency")
+```
+
+Majority of people who have health insurance donot smoke.
+
+#### Distribution of region using piechart
+```{r}
+pie(table(mydf$region))
+```
+
+The number of people from all the region are equally distributed this will be benificial for us when using regression to predict the cost.
+
+#### Correlation between charges and age.
+```{r}
+ggplot(data=mydf, mapping=aes(x=age,y=charges))+geom_point(aes(color='red'))
+```
+
+We can infer that as the age increases the charges also increases
+
+#### Correlation between charges and bmi
+```{r}
+ggplot(data=mydf, mapping=aes(x=bmi,y=charges))+geom_point(aes(color='red'))
+```
+
+We can infer that the peoples bmi does no taffect charges as much but ususally people with bmi higher that 40 pay high charges.
+
+#### Correlation between charges and number of  children
+```{r}
+ggplot(data=mydf, mapping=aes(x=children,y=charges))+geom_point(aes(color='red'))
+```
+
+As the number of children increases the charges usually decreases.
+
+#### Distribution of people taking health insurance based on there age.
+```{r}
+duration = mydf$age
+range(duration)
+breaks = seq(10,70, by = 10)
+duration_cut = cut(duration, breaks, right = TRUE)
+duration_freq = table(duration_cut)
+cbind(duration_freq)
+```
+
+```{r}
+which.max(duration_freq)
+which.min(duration_freq)
+```
+
+The people of age between 40-50 have the highest frequency of people who take health insurance, and those of age range 60-70 have the lowest frequency.
+
+#### Covariance and correlation between age and charges.
+```{r}
+cov(duration, mydf$charges)
+cor(duration, mydf$charges)
+```
+
+### Regression analysis
+#### Training the multiple linear regression to predict the charge based on other parameters.
+
+#### Data Pre processing.
+```{r}
+regdf <- mydf
+regdf$sex[regdf$sex=="male"] = 1
+regdf$sex[regdf$sex=="female"] = 0
+regdf$sex <- as.numeric(regdf$sex)
+regdf$smoker[regdf$smoker=="yes"] = 1
+regdf$smoker[regdf$smoker=="no"] = 0
+regdf$smoker <- as.numeric(regdf$smoker)
+regdf$region[regdf$region=="southwest"] = 1
+regdf$region[regdf$region=="southeast"] = 2
+regdf$region[regdf$region=="northwest"] = 3
+regdf$region[regdf$region=="northeast"] = 4
+regdf$region <- as.numeric(regdf$region)
+unique(regdf$region)
+```
+
+Changed all the classification column to numerical columns before training the multiple-regression so as to train a better model.
+
+#### Making training and test data
+```{r}
+set.seed(123)
+train_samples <- regdf$charges %>%
+  createDataPartition(p=0.8,list=FALSE)
+head(train_samples)
+train <- regdf[train_samples,]
+test <- regdf[-train_samples,]
+```
+
+#### Summary of our model
+```{r}
+model <- lm(charges~.,data=train)
+summary(model)
+```
+
+All Values of Pr(>|t|) is less than .05
+except the sex column so removing the sex column and training the model again.
+F-Statistic is 559.9 which is high the higher the better
+
+```{r}
+regdf <- subset(regdf, select=-c(sex))
+str(regdf)
+```
+
+#### Training the model again after dropping the column sex.
+```{r}
+set.seed(123)
+train_samples <- regdf$charges %>%
+  createDataPartition(p=0.8,list=FALSE)
+head(train_samples)
+train <- regdf[train_samples,]
+test <- regdf[-train_samples,]
+model <- lm(charges~.,data=train)
+summary(model)
+```
+#### prediction using model
+```{r}
+pred <- model %>%
+  predict(test)
+```
+#### Calculating the Root mean squared values
+```{r}
+RMSE <- RMSE(pred,test$charges)
+RMSE
+R2 <- R2(pred,test$charges)
+R2
+```
+
+The Value of R2 is 0.712 which is very good.
+#### Evaluating the reseduals.
+```{r}
+hist(model$residuals)
+qqnorm(model$residuals,ylab = "Residuals")
+qqline(model$residuals)
+```
+
+We are getting a linear line of plot and is normally discriminated.
+
+  
